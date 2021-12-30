@@ -9,4 +9,8 @@ public interface UserService {
     UserDto register(RegistrationRequest registrationRequest);
 
     List<UserDto> getAllUsers();
+
+    UserDto getUserById(String id);
+
+    UserDto updateUser(String id, UserDto userDto);
 }
