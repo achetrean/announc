@@ -6,6 +6,7 @@ import lombok.Setter;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.util.Objects;
+import java.util.UUID;
 
 @MappedSuperclass
 @Getter
@@ -13,6 +14,10 @@ import java.util.Objects;
 public abstract class BaseEntity {
     @Id
     protected String id;
+
+    public BaseEntity() {
+        this.id = UUID.randomUUID().toString();
+    }
 
     @Override
     public boolean equals(Object o) {

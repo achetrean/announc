@@ -50,18 +50,20 @@ public class UserServiceImpl implements UserService {
         user.setRegistrationDate(LocalDate.now());
         user.setHasPremium(false);
 
-        Image image = new Image();
-        try {
-            image.setImage(encodeImageFromFile(new File("userDefaultImage.png")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        image.setUser(user);
-
-        user.setMainImage(image);
-        user.getProfileImages().add(image);
+//        Image image = new Image();
+//        try {
+//            image.setImage(encodeImageFromFile(new File("userDefaultImage.png")));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        image.setUser(user);
+//
+//        user.setMainImage(image);
+//        user.getProfileImages().add(image);
 
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        userRepository.save(user);
         return UserDto.fromUser(user);
     }
 
