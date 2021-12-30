@@ -38,7 +38,7 @@ public class User extends BaseEntity{
     private Boolean hasPremium;
 
     @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             orphanRemoval = true
     )
     @JoinColumn(name = "user_id")

@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class UserDto {
@@ -19,8 +20,8 @@ public class UserDto {
     private LocalDate birthDate;
     private LocalDate registrationDate;
     private Boolean hasPremium;
-    private List<Image> profileImages = new ArrayList<>();
-    private Image mainImage;
+    private List<ImageDto> profileImages = new ArrayList<>();
+    private ImageDto mainImage;
 
     public static UserDto fromUser(User user) {
         UserDto userDto = new UserDto();
@@ -31,8 +32,13 @@ public class UserDto {
         userDto.setBirthDate(user.getBirthDate());
         userDto.setRegistrationDate(user.getRegistrationDate());
         userDto.setHasPremium(user.getHasPremium());
-        userDto.setProfileImages(user.getProfileImages());
-        userDto.setMainImage(user.getMainImage());
+        userDto.setMainImage(ImageDto.fromImage(user.getMainImage()));
+        userDto.setProfileImages(
+                user.getProfileImages()
+                        .stream()
+                        .map(ImageDto::fromImage)
+                        .collect(Collectors.toList())
+        );
         return userDto;
     }
 }

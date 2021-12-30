@@ -10,7 +10,6 @@ import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +18,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -50,16 +51,16 @@ public class UserServiceImpl implements UserService {
         user.setRegistrationDate(LocalDate.now());
         user.setHasPremium(false);
 
-//        Image image = new Image();
-//        try {
-//            image.setImage(encodeImageFromFile(new File("userDefaultImage.png")));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        image.setUser(user);
-//
-//        user.setMainImage(image);
-//        user.getProfileImages().add(image);
+        Image image = new Image();
+        try {
+            image.setImageBytes(encodeImageFromFile(new File("userDefaultImage.png")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        image.setUser(user);
+
+        user.setMainImage(image);
+        user.getProfileImages().add(image);
 
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
@@ -67,7 +68,16 @@ public class UserServiceImpl implements UserService {
         return UserDto.fromUser(user);
     }
 
-    private static String encodeImageFromFile(File image) throws IOException {
+    @Override
+    @Transactional
+    public List<UserDto> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(UserDto::fromUser)
+                .collect(Collectors.toList());
+    }
+
+    private static byte[] encodeImageFromFile(File image) throws IOException {
         FileInputStream imageStream = new FileInputStream(image);
 
         byte[] data = imageStream.readAllBytes();
@@ -77,6 +87,6 @@ public class UserServiceImpl implements UserService {
         byte[] finalData = imageString.getBytes();
         imageStream.close();
 
-        return imageString;
+        return finalData;
     }
 }
