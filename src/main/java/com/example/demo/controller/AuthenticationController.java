@@ -16,16 +16,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    private UserService userService;
-
-    @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
+    private final UserService userService;
 
     @PostMapping("register")
     public ResponseEntity<UserDto> register(@Valid @RequestBody RegistrationRequest registrationRequest) {
-        System.out.println("Yess of cors");
         return ResponseEntity.ok(userService.register(registrationRequest));
     }
 

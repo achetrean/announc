@@ -126,6 +126,17 @@ public class UserServiceImpl implements UserService {
         return UserDto.fromUser(user);
     }
 
+    @Override
+    @Transactional
+    public UserDto deleteUser(String id) {
+        User user = userRepository.findById(id).orElseThrow(() ->
+            new UserNotFoundException("User with " + id + " was not found"));
+
+        userRepository.delete(user);
+
+        return UserDto.fromUser(user);
+    }
+
     private static byte[] encodeImageFromFile(File image) throws IOException {
         FileInputStream imageStream = new FileInputStream(image);
 
