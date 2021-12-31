@@ -54,4 +54,8 @@ public class User extends BaseEntity{
 
     @Column(name = "password")
     private String password;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id")
+    private Role role;
 }
