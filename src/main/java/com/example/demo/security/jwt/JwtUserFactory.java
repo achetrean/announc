@@ -5,12 +5,15 @@ import com.example.demo.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class JwtUserFactory {
+public final class JwtUserFactory {
 
-    public JwtUserFactory(){}
+    public JwtUserFactory() {
+    }
 
     public static JwtUser create(User user) {
         return new JwtUser(
@@ -19,7 +22,7 @@ public class JwtUserFactory {
                 user.getLastName(),
                 user.getPassword(),
                 user.getEmail(),
-                mapToGrantedAuthorities(List.of(user.getRole()))
+                mapToGrantedAuthorities( Arrays.asList(user.getRole()) )
         );
     }
 

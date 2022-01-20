@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -21,29 +20,29 @@ public class SimpleCORSFilter implements Filter {
 
     private final AppConfig appConfig;
 
-    List<String> allowedOrigins = new ArrayList<>();
-    List<String> allowedMethods = new ArrayList<>();
+    ArrayList<String> AllowedOrigins = new ArrayList<>();
+    ArrayList<String> AllowedMethods = new ArrayList<>();
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response,
-                         FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
+            throws IOException, ServletException {
 
         final HttpServletRequest req = (HttpServletRequest) request;
         final HttpServletResponse res = (HttpServletResponse) response;
 
-        allowedOrigins.add(appConfig.getFrontendUrl());
-        allowedOrigins.add(appConfig.getFrontendHttpUrl());
-        allowedMethods.addAll(Arrays.asList("POST", "PUT", "GET", "DELETE", "OPTIONS"));
+        AllowedOrigins.add(appConfig.getFrontendUrl());
+        AllowedOrigins.add(appConfig.getFrontendHttpUrl());
+        AllowedMethods.addAll(Arrays.asList("POST", "PUT", "GET", "DELETE", "OPTIONS"));
 
         String reqOrigin;
         reqOrigin = req.getHeader("Origin");
 
-        for (String origin : allowedOrigins) {
-            if (origin.equals(reqOrigin)) {
-                res.setHeader("Access-Control-Allow-Origin", reqOrigin);
-                break;
-            }
-        }
+//        for (String origin : AllowedOrigins) {
+//            if (origin.equals(reqOrigin)) {
+//                res.setHeader("Access-Control-Allow-Origin", reqOrigin);
+//                break;
+//            }
+//        }
 
         if (req.getMethod().equals("OPTIONS")) {
 
@@ -51,7 +50,7 @@ public class SimpleCORSFilter implements Filter {
             String reqMethod;
             reqMethod = req.getHeader("Access-Control-Request-Method");
 
-            for (String method : allowedMethods) {
+            for (String method : AllowedMethods) {
                 if (method.equals(reqMethod)) {
                     res.setHeader("Access-Control-Allow-Methods", reqMethod);
                 }
@@ -72,4 +71,5 @@ public class SimpleCORSFilter implements Filter {
             filterChain.doFilter(req, res);
         }
     }
+
 }

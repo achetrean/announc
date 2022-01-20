@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.RegistrationRequest;
 import com.example.demo.dto.UserDto;
 import com.example.demo.service.UserService;
@@ -17,6 +18,11 @@ import java.util.List;
 public class AuthenticationController {
 
     private final UserService userService;
+
+    @PostMapping("login")
+    public ResponseEntity<UserDto> login(@Valid @RequestBody LoginRequest request) {
+        return ResponseEntity.ok(userService.login(request));
+    }
 
     @PostMapping("register")
     public ResponseEntity<UserDto> register(@Valid @RequestBody RegistrationRequest registrationRequest) {

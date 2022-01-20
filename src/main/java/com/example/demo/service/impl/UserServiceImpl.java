@@ -1,19 +1,28 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.dto.ImageDto;
+import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.RegistrationRequest;
 import com.example.demo.dto.UserDto;
 import com.example.demo.entity.Image;
+import com.example.demo.entity.Role;
+import com.example.demo.entity.RoleEnum;
 import com.example.demo.entity.User;
 import com.example.demo.exception.UserExistsException;
 import com.example.demo.exception.UserNotFoundException;
+import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.security.jwt.JwtTokenProvider;
 import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.security.RolesAllowed;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -29,12 +38,13 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    private BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    @Autowired
-    public void setPasswordEncoder(BCryptPasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
+    private final AuthenticationManager authenticationManager;
+
+    private final JwtTokenProvider jwtTokenProvider;
+
+    private final RoleRepository roleRepository;
 
     @Override
     @Transactional
@@ -51,6 +61,9 @@ public class UserServiceImpl implements UserService {
         user.setBirthDate(request.getBirthDate());
         user.setRegistrationDate(LocalDate.now());
         user.setHasPremium(false);
+
+        Role roleUser = roleRepository.findByRole(RoleEnum.ROLE_USER);
+        user.setRole(roleUser);
 
         Image image = new Image();
         try {
@@ -133,6 +146,39 @@ public class UserServiceImpl implements UserService {
             new UserNotFoundException("User with " + id + " was not found"));
 
         userRepository.delete(user);
+
+        return UserDto.fromUser(user);
+    }
+
+    @Override
+    @Transactional
+    public UserDto login(LoginRequest signInRequest) {
+        String email = signInRequest.getEmail();
+        String password = signInRequest.getPassword();
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new UserNotFoundException("User with email " + email + "was not found"));
+
+
+        String token = jwtTokenProvider.createToken(user);
+
+        UserDto response = UserDto.fromUser(user);
+        response.setToken(token);
+        return response;
+    }
+
+    @Override
+    @Transactional
+    public UserDto uploadProfileImages(String id, List<ImageDto> images) {
+        User user = userRepository.findById(id).orElseThrow(() ->
+                new UserNotFoundException("User with id " + id + " was not found")
+        );
+
+        images.forEach(imageDto -> {
+            Image image = new Image();
+            image.setImageBytes(imageDto.getImageBytes().getBytes());
+            user.getProfileImages().add(image);
+        });
 
         return UserDto.fromUser(user);
     }

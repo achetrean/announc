@@ -45,6 +45,9 @@ public class Announcement extends BaseEntity{
     @JoinColumn(name = "currency_id")
     private Currency currency;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    private User user;
+
 //    @OneToMany(cascade = CascadeType.ALL,
 //            fetch = FetchType.LAZY,
 //            orphanRemoval = true

@@ -5,22 +5,23 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.UUID;
 
 public class JwtUser implements UserDetails {
 
     private final String id;
-    private final String firstName;
-    private final String lastName;
+    private final String firstname;
+    private final String lastname;
     private final String password;
     private final String email;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public JwtUser(String id, String firstName, String lastName,
+    public JwtUser(String id, String firstname, String lastname,
                    String password, String email,
                    Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.firstname = firstname;
+        this.lastname = lastname;
         this.password = password;
         this.email = email;
         this.authorities = authorities;
@@ -54,12 +55,12 @@ public class JwtUser implements UserDetails {
         return true;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getFirstname() {
+        return firstname;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getLastname() {
+        return lastname;
     }
 
     public String getEmail() {
@@ -86,6 +87,6 @@ public class JwtUser implements UserDetails {
     public String toString() {
         return "JwtUser{" +
                 "authorities=" + authorities +
-                "}";
+                '}';
     }
 }

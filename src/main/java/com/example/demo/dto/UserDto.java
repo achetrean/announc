@@ -22,6 +22,7 @@ public class UserDto {
     private Boolean hasPremium;
     private List<ImageDto> profileImages = new ArrayList<>();
     private ImageDto mainImage;
+    private String token;
 
     public static UserDto fromUser(User user) {
         UserDto userDto = new UserDto();

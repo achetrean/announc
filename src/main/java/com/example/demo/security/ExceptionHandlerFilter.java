@@ -10,14 +10,13 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.rowset.serial.SerialException;
 import java.io.IOException;
 
 @Component
 public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
-    public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    @Override
+    public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             filterChain.doFilter(request, response);
         } catch (RuntimeException e) {
@@ -35,4 +34,3 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         return mapper.writeValueAsString(object);
     }
 }
-
